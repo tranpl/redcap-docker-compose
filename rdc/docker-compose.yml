@@ -90,8 +90,8 @@ services:
   # THIS CONTAINER IS OPTIONAL IF YOU WANT TO HAVE PHPMYADMIN - OTHERWISE COMMENT IT OUT
   phpmyadmin:
     container_name: ${DOCKER_PREFIX}_phpmyadmin
-#    image: phpmyadmin/phpmyadmin
-    image: arm64v8/phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    #image: arm64v8/phpmyadmin
     env_file: .env
     environment:
       - UPLOAD_LIMIT=128M
