@@ -1,7 +1,8 @@
 FROM php:8.2-apache-buster
 
-## https://hub.docker.com/_/php/tags?page=1&name=apache
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
+## https://hub.docker.com/_/php/tags?page=1&name=apache
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qq && \
@@ -22,16 +23,15 @@ RUN apt-get update -qq && \
     && docker-php-ext-enable imagick \
 # INSTALL MYSQLI AND OTHER DOCKER FUN
     && docker-php-ext-install gd zip mysqli \
-# INSTALL LDAP
-    && docker-php-ext-install openldap-dev \
-    && docker-php-ext-install ldap \
-    && docker-php-ext-enable ldap \
-    && apt-get del .build-dependencies-in-virtual-world \
 # INSTALL XDEBUG
     && pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "/usr/local/etc/php/conf.d/xdebug.ini" \
 ### cleanup
     && rm -r /var/lib/apt/lists/*
+
+# INSTALL LDAP
+RUN chmod +x /usr/local/bin/install-php-extensions; \
+install-php-extensions ldap
 
 # Update ImageMagick policy
 RUN sed -i 's/policy\ domain=\"coder\" rights=\"none\" pattern=\"PDF\"/policy domain=\"coder\" rights=\"read\" pattern=\"PDF\"/g' /etc/ImageMagick-6/policy.xml
