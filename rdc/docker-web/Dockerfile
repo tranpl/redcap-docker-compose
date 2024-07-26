@@ -22,6 +22,11 @@ RUN apt-get update -qq && \
     && docker-php-ext-enable imagick \
 # INSTALL MYSQLI AND OTHER DOCKER FUN
     && docker-php-ext-install gd zip mysqli \
+# INSTALL LDAP
+    && docker-php-ext-install openldap-dev \
+    && docker-php-ext-install ldap \
+    && docker-php-ext-enable ldap \
+    && apt-get del .build-dependencies-in-virtual-world \
 # INSTALL XDEBUG
     && pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "/usr/local/etc/php/conf.d/xdebug.ini" \
