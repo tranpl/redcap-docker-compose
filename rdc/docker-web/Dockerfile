@@ -31,12 +31,24 @@ RUN curl -fsSL https://github.com/Imagick/imagick/archive/944b67fce68bcb5835999a
 RUN sed -i 's/policy\ domain=\"coder\" rights=\"none\" pattern=\"PDF\"/policy domain=\"coder\" rights=\"read\" pattern=\"PDF\"/g' /etc/ImageMagick-6/policy.xml
 
 # INSTALL MYSQLI AND OTHER DOCKER FUN
-RUN docker-php-ext-install gd zip mysqli \
+RUN docker-php-ext-install gd zip mysqli\
 # INSTALL XDEBUG
     && pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > "/usr/local/etc/php/conf.d/xdebug.ini" \
 ### cleanup
     && rm -r /var/lib/apt/lists/*
+
+## Michael Tran Modifications -- Add LDAP (VCU specific)
+
+RUN \ 
+    apt-get update && \
+    apt-get install libldap2-dev -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+    docker-php-ext-install ldap
+
+### ---------END----------
+
 
 # COPY OUR DEFAULT CONTAINER CONFIG
 COPY ./container-config /etc/container-config
